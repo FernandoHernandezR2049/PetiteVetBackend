@@ -12,23 +12,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="user") //para mapear la tabla de productos en la base de datos
+@Table(name="category") //para mapear la tabla de productos en la base de datos
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserModel {
+public class CategoryModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="iduser", unique=true, nullable=false)
+	@Column(name="idcategory", unique=true, nullable=false)
 	private Long id;
-	@Column(name="name")
-	private String name;
-	@Column(name="email")
-	private String email;
-	@Column(name="phone")
-	private String tel;
-	@Column(name="password")
-	private String password;
-	@Column(name="role_idrole", unique=true, nullable=false)
-	private Long idrole;
-}//Class UserModel
+	@Column(name="category")
+	private String category;
+}

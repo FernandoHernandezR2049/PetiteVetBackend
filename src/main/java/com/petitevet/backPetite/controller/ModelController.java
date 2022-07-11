@@ -20,9 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping (path="/api/products/")
-//@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")
 public class ModelController {
-
 private final ProductServices productServices;
 	
 	@Autowired //La inyección de dependencias
@@ -55,7 +54,9 @@ private final ProductServices productServices;
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) String description,
 			@RequestParam(required = false) String img,
-			@RequestParam(required = false) Double precio) {
-		return productServices.updateProduct(id, name, description, img, precio);
+			@RequestParam(required = false) Double precio,
+			@RequestParam(required = false) String SKU,
+			@RequestParam(required = false) String quantity) {
+		return productServices.updateProduct(id, name, description, img, precio, SKU, quantity);
 	}//updateProduct
 }

@@ -1,37 +1,81 @@
 package com.petitevet.backPetite.service;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.petitevet.backPetite.models.UserModel;
+import com.petitevet.backPetite.repository.UserRepository;
 
 @Service
 public class UserServices {
-public final ArrayList<UserModel> lista = new ArrayList<>();
+private final UserRepository userRepository;
 	
-	public UserServices() {
-		lista.add(new UserModel("Fernando Farías González","ffarias934@gmail.com","4776476274","Ferfar92"));
+	@Autowired
+	public UserServices(UserRepository userRepository) {
+		super();
+		this.userRepository = userRepository;
+	}// constructor
 
-	}//contructor
-	
-//	public ArrayList<UserModel> getUsers(){
-//		return lista;
-//	}//ArrayList
-	
+	public List<UserModel> getUsers() {
+		return userRepository.findAll();
+	}//getProducts
+
+	public UserModel getUser(Long id) {
+		return userRepository.findById(id).orElseThrow(
+				()->new IllegalArgumentException("El Producto con el id" + id + "no existe."));
+	}//getProduct
+
+	public UserModel deleteUser(Long id) {
+		UserModel tmpProd = null;
+		if(userRepository.existsById(id)) {
+			tmpProd = userRepository.findById(id).get();
+			userRepository.deleteById(id);
+		}//if exist
+		return tmpProd;
+	}//deleteProductModel
+
 	public UserModel addUser(UserModel userModel) {
-		lista.add(userModel);
+		UserModel tmpProd = null;
+		Optional<UserModel> prodByName = userRepository.findByName(userModel.getName());
+		if(prodByName.isPresent()) {
+			throw new IllegalArgumentException("El Producto con el nombre["+
+		userModel.getName() + "] ya existe.");
+		} else {
+			userRepository.save(userModel);
+		}//if
 		return userModel;
-	}//addUser
+	}//addProductModel
 
-	public boolean authUser(String email, String password) {
-		boolean result = false;
-		for (UserModel userModel : lista) {
-			if(userModel.getEmail().equals(email) && userModel.getPassword().equals(password)) {
-				result=true;
-				break;
-			}
-		}
-		return result;
-	}
-	
+	public UserModel updateUser(Long id, String name, String email, String tel, String password, Long idrole) {
+		UserModel tmpProd = null;
+		if(userRepository.existsById(id)) {
+			tmpProd = userRepository.findById(id).get();
+			if(name!=null) tmpProd.setName(name);
+			if(email!=null) tmpProd.setEmail(email);
+			if(tel!=null) tmpProd.setTel(tel);
+			if(password!=null) tmpProd.setPassword(password);
+			if(idrole!=null) tmpProd.setIdrole(idrole);
+			userRepository.save(tmpProd);
+		}else {
+			System.out.println("El Producto con el id" + id + "no existe.");
+		}//if
+		return tmpProd;
+	}//updateProductModel
+
+	//Login
+	public boolean authUser(String email,String password) {
+		boolean respt = false;
+		Optional<UserModel> prodByLogin = userRepository.findByEmailAndPassword(email, password);
+		if(prodByLogin.isPresent()) {
+			System.out.println("Ingreso exitoso");
+			respt = true;
+		}else {
+			System.out.println("Credenciales inválidas");
+		}//if
+		return respt;
+	}//updateProductModel
+
 }//Class UserServices

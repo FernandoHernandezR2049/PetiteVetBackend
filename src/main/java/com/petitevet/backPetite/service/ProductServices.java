@@ -1,71 +1,67 @@
 package com.petitevet.backPetite.service;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.petitevet.backPetite.models.ProductModel;
+import com.petitevet.backPetite.repository.ProductRepository;
 
 @Service
 public class ProductServices {
-	public final ArrayList<ProductModel> lista = new ArrayList<>();
+	private final ProductRepository productRepository;
 	
-	public ProductServices() {
-		lista.add(new ProductModel("Cepillo canino","Mango ergonómico. Puntas metálicas. "
-				+ "Desenreda y quita pelo muerto. Los colores de la imagen pueden variar.", "1.cepillo_canino.png",79, "123"));
-		lista.add(new ProductModel("Plato para alimento","Sus dimensiones de 14 x 18 x 4.5 poseen la capacidad suficiente "
-				+ "para alimentar a tu mejor amigo y satisfacer su apetito moderado. "
-				+ "Los colores de la imagen pueden variar.", "2.plato_de_comida.jpg",199, "123"));
-		lista.add(new ProductModel("Cama","Cama tamaño grande fabricada en tela polar con almohadón que se puede sacar para lavar. "
-				+ "Medidas de la cama: 110 cm (largo) x 75 cm (ancho) x 25 cm (altura). "
-				+ "Los colores de la imagen pueden variar.", "2.plato_de_comida.jpg",250, "123"));
-		lista.add(new ProductModel("Correa","Material de la correa: Acero. "
-				+ "Peso máximo soportado: 5 kg. Largo: 1.2m", "4.correa_perro.jpg",59, "123"));
-
-	}//contructor
+	@Autowired
+	public ProductServices(ProductRepository productRepository) {
+		super();
+		this.productRepository = productRepository;
+	}// constructor
 	
-	public ArrayList<ProductModel> getProducts(){
-		return lista;
-	}
+	public List<ProductModel> getProducts() {
+		return productRepository.findAll();
+	}//getProducts
 	
 	public ProductModel getProduct(Long id) {
-		ProductModel tmpProd = null;
-		for (ProductModel productModel : lista) {
-			if(productModel.getId()==id) {
-				tmpProd = productModel;
-				break;
-			}// if
-		}//foreach
-		return tmpProd;
-	}//getPrducto
-
+		return productRepository.findById(id).orElseThrow(
+				()->new IllegalArgumentException("El Producto con el id" + id + "no existe."));
+	}//getProduct
+	
 	public ProductModel deleteProduct(Long id) {
 		ProductModel tmpProd = null;
-		for (ProductModel productModel : lista) {
-			if(productModel.getId()==id) {
-				tmpProd = lista.remove(lista.indexOf(productModel));
-				break;
-			}// if
-		}//foreach
+		if(productRepository.existsById(id)) {
+			tmpProd = productRepository.findById(id).get();
+			productRepository.deleteById(id);
+		}//if exist
 		return tmpProd;
-	}// deleteProducto
-
+	}//deleteProductModel
+	
 	public ProductModel addProduct(ProductModel productModel) {
-		lista.add(productModel);
-		return productModel;
-	}//addProducto
-
-	public ProductModel updateProduct(Long id, String name, String description, 
-			String Img, Double precio) {
 		ProductModel tmpProd = null;
-		for (ProductModel producto : lista) {
-			if(producto.getId()==id) {
-				if(name!=null)producto.setDescription(name);
-				if(description!=null)producto.setDescription(description);
-				if(Img!=null)producto.setImg(Img);
-				if(precio!=null)producto.setPrecio(precio.doubleValue());
-				tmpProd = producto;
-				break;
-			}// if
-		}//foreach
+		Optional<ProductModel> prodByName = productRepository.findByName(productModel.getName());
+		if(prodByName.isPresent()) {
+			throw new IllegalArgumentException("El Producto con el nombre["+
+		productModel.getName() + "] ya existe.");
+		} else {
+			productRepository.save(productModel);
+		}//if
+		return productModel;
+	}//addProductModel
+	
+	public ProductModel updateProduct(Long id, String name, String description,
+			String img, Double precio, String SKU, String quantity ) {
+		ProductModel tmpProd = null;
+		if(productRepository.existsById(id)) {
+			tmpProd = productRepository.findById(id).get();
+			if(name!=null) tmpProd.setName(name);
+			if(description!=null) tmpProd.setDescription(description);
+			if(img!=null) tmpProd.setImg(img);
+			if(precio!=null) tmpProd.setPrecio(precio.doubleValue());
+			productRepository.save(tmpProd);
+		}else {
+			System.out.println("El Producto con el id" + id + "no existe.");
+		}//if
 		return tmpProd;
-	}//updateProducto
-}
+	}//updateProductModel
+	
+}//Class ProductServices

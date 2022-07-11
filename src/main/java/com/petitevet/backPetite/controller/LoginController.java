@@ -14,24 +14,18 @@ import com.petitevet.backPetite.service.UserServices;
 @RequestMapping (path="/api/login/")
 public class LoginController {
 
-private final UserServices userServices;
-@Autowired
-public LoginController(UserServices userServices) {
-	this.userServices = userServices;
-}// constructor
-
-//	@PostMapping
-//	public UserModel addUser(@RequestBody UserModel userModel, 
-//			@RequestParam(required = false) String email,
-//			@RequestParam(required = false) String password) {
-//		return userServices.addUser(name, password);
-//	}//addProduct
-
-@PostMapping
-public boolean authUser( 
-		@RequestParam(required = true) String email,
-		@RequestParam(required = true) String password) {
-	return userServices.authUser(email, password);
-}//addProduct
+	private final UserServices userServices;
+	
+	@Autowired
+	public LoginController(UserServices userServices) {
+		this.userServices = userServices;
+	}// constructor
+	
+	@PostMapping
+	public boolean authUser(
+				@RequestParam(required = true) String email,
+				@RequestParam(required = true) String password) {
+		return userServices.authUser(email, password);
+	}//authUser
 
 }
