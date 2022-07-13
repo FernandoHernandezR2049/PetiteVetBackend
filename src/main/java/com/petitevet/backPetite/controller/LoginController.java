@@ -1,6 +1,7 @@
 package com.petitevet.backPetite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import com.petitevet.backPetite.service.UserServices;
 
 @RestController
 @RequestMapping (path="/api/login/")
+@CrossOrigin(origins = "*")
 public class LoginController {
 
 	private final UserServices userServices;

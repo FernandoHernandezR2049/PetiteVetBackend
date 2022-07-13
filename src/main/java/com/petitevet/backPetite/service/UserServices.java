@@ -49,18 +49,25 @@ private final UserRepository userRepository;
 		return userModel;
 	}//addProductModel
 
-	public UserModel updateUser(Long id, String name, String email, String tel, String password, Long idrole) {
+	public UserModel updateUser(Long id, String name, String email, String tel, String password, Long idrole) { //String newPassword) {
 		UserModel tmpProd = null;
 		if(userRepository.existsById(id)) {
 			tmpProd = userRepository.findById(id).get();
-			if(name!=null) tmpProd.setName(name);
-			if(email!=null) tmpProd.setEmail(email);
-			if(tel!=null) tmpProd.setTel(tel);
-			if(password!=null) tmpProd.setPassword(password);
-			if(idrole!=null) tmpProd.setIdrole(idrole);
-			userRepository.save(tmpProd);
+			if(tmpProd.getPassword().equals(password)) {
+				if(name!=null) tmpProd.setName(name);
+				if(email!=null) tmpProd.setEmail(email);
+				if(tel!=null) tmpProd.setTel(tel);
+				if(password!=null) tmpProd.setPassword(password);
+				if(idrole!=null) tmpProd.setIdrole(idrole);
+//					if(newPassword != null) {
+//						tmpProd.setPassword(newPassword);
+//					} else {
+//						System.out.println("Error al comparar las contraseñas");
+//					}//if newpassword
+				userRepository.save(tmpProd);
+			}
 		}else {
-			System.out.println("El Producto con el id" + id + "no existe.");
+			System.out.println("El usuario no existe o credenciales inválidas.");
 		}//if
 		return tmpProd;
 	}//updateProductModel

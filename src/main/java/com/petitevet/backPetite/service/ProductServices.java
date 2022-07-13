@@ -1,5 +1,6 @@
 package com.petitevet.backPetite.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,12 @@ public class ProductServices {
 	public List<ProductModel> getProducts() {
 		return productRepository.findAll();
 	}//getProducts
+	
+	public List<ProductModel> getProductHome(){
+		var fulllist = productRepository.findAll();
+		var newProducts = fulllist.subList(fulllist.size()-3, fulllist.size());
+		return newProducts;
+	}
 	
 	public ProductModel getProduct(Long id) {
 		return productRepository.findById(id).orElseThrow(

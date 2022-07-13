@@ -39,6 +39,11 @@ private final ProductServices productServices;
 		return productServices.getProduct(id);
 	}//getMapping
 	
+	@GetMapping (path="home")
+	public List<ProductModel> getProductHome() {
+		return productServices.getProductHome();
+	}//getMapping
+	
 	@DeleteMapping (path="{prodId}")
 	public ProductModel deleteProduct(@PathVariable("prodId") Long id) {
 		return productServices.deleteProduct(id);

@@ -22,7 +22,7 @@ public class ProductModel {
 	@Column(name="idproduct", unique=true, nullable=false)
 	private Long id;
 	@Column(name="name")
-	private String name;
+	public String name;
 	@Column(name="description")
 	private String description;
 	@Column(name="image")
@@ -33,5 +33,4 @@ public class ProductModel {
 	private String SKU;
 	@Column(name="quantity", nullable=false)
 	private String quantity;
-	
 }//ProductModel
